@@ -1,0 +1,164 @@
+/*
+ * CSS reset
+ *
+ */
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+/*
+ * "real" CSS
+ *
+ */
+
+body {
+	font-family: Aller, Helvetica, sans-serif;
+	padding: .5em;
+	line-height: 1.2em;
+	font-size: 12px;
+}
+
+h1 {
+	font-weight: bold;
+	font-size: 2em;
+	line-height: 2em;
+}
+
+h2 {
+	font-weight: bold;
+	font-size: 1.3em;
+	line-height: 1.3em;
+}
+
+th,td {
+	padding: 3px 6px 3px 6px;
+	border-bottom: 1px solid #7395b5;
+}
+
+th {
+	background-color:#7395b5;
+}
+
+table.list {
+	border: 1px solid #7395b5;
+}
+
+th {
+	font-weight: bold;
+}
+
+a:link {text-decoration: none; color: inherit}
+a:visited {text-decoration: none; color: inherit}
+a:active {text-decoration: none}
+a:hover {text-decoration: none; color: #a00}
+
+textarea, input {
+	color: #3c5f7c;
+}
+
+textarea {
+	border: 1px solid #7395b5;
+	padding: 3px;
+}
+
+.button, .button {
+	border: 1px solid #7395b5;
+	padding: 3px;
+	color: #3c5f7c;
+}
+
+input.no-button, button.no-button {
+	border: none;
+	background-color: transparent;
+}
+
+select.select, input[type=text] {
+	border: none;
+	border-bottom: 1px solid #7395b5;
+}
+
+.tag {
+	background-color: #ddd;
+	font-size: x-small;
+	padding: 1px;
+	border-style: outset;
+	border-width: thin;
+	color: #000;
+	text-decoration: none;
+	line-height: 1.8;
+}
+
+.overdue {
+	background-color: red;
+}
+
+.thisweek {
+	background-color: yellow;
+}
+
+.nextweek {
+	background-color: orange;
+}
+
+#entry, #tags {
+	width: 40em;
+	float: left;
+}
+
+#tags {
+	width: 40em;
+}
+
+#notes {
+	width: 40em;
+}
+
+#children {
+}
+
+#trash {
+	position:absolute;
+ 	bottom:10;
+ 	right:10;
+}
