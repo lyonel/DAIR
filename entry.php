@@ -14,6 +14,9 @@ try {
 
    $r_action = 'view';
    extract($_REQUEST, EXTR_PREFIX_ALL|EXTR_REFS, 'r');
+   if(!isset($_REQUEST['back'])) {
+    $r_back = $_SERVER['HTTP_REFERER'];
+   }
 
    if($r_action == 'new') {
      unset($r_id);
@@ -82,9 +85,9 @@ try {
      $entries[$entry['title'].' ('.$entry['type'].')'] = $entry['id'];
    }
 
-
-     print "<form method=\"POST\" action=\".\"><input class=\"button\" type=\"submit\" value=\"return to list\" name=\"action\"></form>\n";
+     print "<form method=\"POST\" action=\"".$r_back."\"><input class=\"button\" type=\"submit\" value=\"return to list\" name=\"action\"></form>\n";
      print "<form id=\"entry\" method=\"POST\" action=\"".$_SERVER['PHP_SELF']."\">\n";
+     print "<input type=\"hidden\" value=\"".$r_back."\" name=\"back\">\n";
      print "<input type=\"hidden\" value=\"save\" name=\"action\">\n";
      if(isset($row['id'])) {
        print "<input type=\"hidden\" value=\"".$row['id']."\" name=\"id\">\n";
@@ -114,10 +117,12 @@ try {
    {
    print "<div id=\"tags\"><h2>Tags</h2>";
    print "<form method=\"POST\">\n";
+     print "<input type=\"hidden\" value=\"".$r_back."\" name=\"back\">\n";
    print "<input type=\"hidden\" value=\"".$row['id']."\" name=\"id\">";
    print "<input class=\"button\" type=\"submit\" value=\"".($row['flagged']?"un":"")."flag\" name=\"action\">";
    print "</form>\n";
    print "<form method=\"POST\">\n";
+     print "<input type=\"hidden\" value=\"".$r_back."\" name=\"back\">\n";
    print "<input type=\"text\" name=\"keyword\">\n";
    print "<input type=\"hidden\" value=\"".$row['id']."\" name=\"id\">";
    print "<input class=\"button\" type=\"submit\" value=\"add\" name=\"action\">";
@@ -125,6 +130,7 @@ try {
 
    foreach($dbh->query('SELECT ROWID AS id,keyword FROM keywords WHERE entryid='.$dbh->quote($r_id)) as $tags) {
      print "<form method=\"POST\">\n";
+     print "<input type=\"hidden\" value=\"".$r_back."\" name=\"back\">\n";
      print "<input type=\"hidden\" value=\"".$tags['id']."\" name=\"keywordid\">";
      print "<input type=\"hidden\" value=\"X\" name=\"action\">";
      print "<input class=\"button\" type=\"submit\" value=\"&#x2716; ".htmlspecialchars($tags['keyword']).'"> ';
@@ -134,6 +140,7 @@ try {
 
    print "<div id=\"notes\"><h2>Notes</h2>";
    print "<form id=\"notes\" method=\"POST\">\n";
+     print "<input type=\"hidden\" value=\"".$r_back."\" name=\"back\">\n";
    print "<input type=\"hidden\" value=\"".$row['id']."\" name=\"id\">";
    print "from:<input type=\"text\" name=\"author\">\n";
    print "<p>note:<br><textarea type=\"text\" cols=40 rows=3 name=\"note\"></textarea>\n";
@@ -143,6 +150,7 @@ try {
    foreach($dbh->query('SELECT ROWID AS id,DATE(timestamp, \'localtime\') AS date,TIME(timestamp, \'localtime\') AS time,* FROM notes WHERE entryid='.$dbh->quote($r_id).' ORDER by timestamp DESC') as $tags) {
      print "<tr><td>";
      print "<form method=\"POST\">\n";
+     print "<input type=\"hidden\" value=\"".$r_back."\" name=\"back\">\n";
      print "<input type=\"hidden\" value=\"".$tags['id']."\" name=\"noteid\">";
      print "<input class=\"button\" type=\"submit\" value=\"X\" name=\"action\">";
      print "</form></td>\n";
@@ -160,6 +168,7 @@ try {
    foreach($dbh->query('SELECT ROWID AS id,* FROM entries WHERE parentid='.$dbh->quote($r_id).'') as $child) {
      print "<tr><td>";
      print "<form method=\"POST\">\n";
+     print "<input type=\"hidden\" value=\"".$r_back."\" name=\"back\">\n";
      print "<input type=\"hidden\" value=\"".$child['id']."\" name=\"id\">";
      print "<input class=\"button\" type=\"submit\" value=\"view\" name=\"action\">".reformat(htmlspecialchars($child['title']));
      print "</form></td>\n";
@@ -169,6 +178,7 @@ try {
    }
    print "<tr><td>";
    print "<form method=\"POST\">\n";
+     print "<input type=\"hidden\" value=\"".$r_back."\" name=\"back\">\n";
    print "<input type=\"hidden\" value=\"".$r_id."\" name=\"parentid\">";
    print "<input type=\"hidden\" value=\"".$row['category']."\" name=\"category\">";
    print "<input type=\"hidden\" value=\"".$row['project']."\" name=\"project\">";
@@ -184,6 +194,7 @@ try {
 
      if(isset($row['id'])) {
        print "<form id=\"trash\" method=\"POST\"><input type=\"hidden\" value=\"X\" name=\"action\">\n";
+     print "<input type=\"hidden\" value=\"".$r_back."\" name=\"back\">\n";
        print "<input type=\"image\" src=\"trash.png\" title=\"delete this entry\">";
        print "<input type=\"hidden\" value=\"".$row['id']."\" name=\"id\"></form>";
      }
