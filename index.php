@@ -44,6 +44,7 @@ try {
    print "<th></th>";
    print "<th>ID</th>";
    print "<th></th>";
+   print "<th></th>";
    print "<th>project</th>";
    print "<th>category</th>";
    print "<th>title</th>";
@@ -58,7 +59,8 @@ try {
      print "<tr ".($row['open']?'':'class="closed"').">";
      print "<td><a href=\"?".join('&', array('type='.urlencode($row['type']), $_SERVER['QUERY_STRING']))."\">".htmlspecialchars($row['type'])."</a></td>";
      print "<td><a href=\"entry.php?id=".$row['id']."\">".$row['id']."</td>";
-     print "<td>".(isset($row['linked'])?'<a href="?parentid='.$row['id'].'">&#8862;</a>':"")."</td>";
+     print "<td>".(isset($row['linked'])?'<a href="?parentid='.$row['id'].'"><img src="paperclip.png" border="0"></a>':"")."</td>";
+     print "<td>".($row['flagged']?"&#9873;":"")."</td>";
      print "<td><a href=\"?project=".$row['project']."\">".htmlspecialchars($row['project'])."</td>";
      print "<td><a href=\"?".join('&', array('category='.urlencode($row['category']), $_SERVER['QUERY_STRING']))."\">".htmlspecialchars($row['category'])."</a></td>";
      print "<td><a href=\"entry.php?id=".$row['id']."\" title=\"".htmlspecialchars($row['summary'])."\">".htmlspecialchars($row['title'])."</td>";

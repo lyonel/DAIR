@@ -55,6 +55,10 @@ try {
      $r_action = null;
    }
 
+   if(($r_action == 'unflag' || $r_action == 'flag') && isset($r_id)) {	// existing entry
+     $dbh->exec('UPDATE entries SET flagged = NOT flagged WHERE ROWID='.$dbh->quote($r_id));
+   }
+
    if($r_action == 'save' && isset($r_id)) {	// existing entry
        $sth = $dbh->prepare('UPDATE entries SET project=?, type=?, category=?, title=?, summary=?, owner=?, status=?, probability=?, impact=?, strategy=?, deadline=?, parentid=? WHERE ROWID=?');
        $sth->execute(array($r_project, $r_type, $r_category, $r_title, $r_summary, $r_owner, $r_status, $r_probability, $r_impact, $r_strategy, $r_deadline, $r_parentid, $r_id));
@@ -109,6 +113,10 @@ try {
    if(isset($r_id))
    {
    print "<div id=\"tags\"><h2>Tags</h2>";
+   print "<form method=\"POST\">\n";
+   print "<input type=\"hidden\" value=\"".$row['id']."\" name=\"id\">";
+   print "<input class=\"button\" type=\"submit\" value=\"".($row['flagged']?"un":"")."flag\" name=\"action\">";
+   print "</form>\n";
    print "<form method=\"POST\">\n";
    print "<input type=\"text\" name=\"keyword\">\n";
    print "<input type=\"hidden\" value=\"".$row['id']."\" name=\"id\">";
