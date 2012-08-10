@@ -47,6 +47,7 @@ try {
    print "<tr>";
    print "<th></th>";
    print "<th>ID</th>";
+   print "<th></th>";
    print "<th>project</th>";
    print "<th>category</th>";
    print "<th>title</th>";
@@ -58,9 +59,10 @@ try {
    print "<th>activity</th>";
    print "</tr>\n";
    foreach ($dbh->query('SELECT probability*impact AS score,entries.ROWID AS id,DATE(deadline) AS due,open*(DATE(\'now\', \'localtime\')>=deadline) AS overdue,julianday(deadline)-julianday(\'now\') as duein,DATE(timestamp, \'localtime\') AS created,julianday(\'now\')-julianday(timestamp) AS age,open*100/(1+(JULIANDAY(\'now\')-JULIANDAY(updated))) AS activity,DATE(updated,\'localtime\') AS modified,* FROM entries,tags,persons WHERE persons.entryid=id AND tags.entryid=id AND '.join(' AND ', $sort).' GROUP BY id ORDER BY open DESC,open*probability*impact DESC,deadline') as $row) {
-     print "<tr>";
+     print "<tr ".($row['open']?'':'class="closed"').">";
      print "<td><a href=\"?".join('&', array('type='.urlencode($row['type']), $_SERVER['QUERY_STRING']))."\">".htmlspecialchars($row['type'])."</a></td>";
      print "<td><a href=\"entry.php?id=".$row['id']."\">".$row['id']."</td>";
+     print "<td>".(isset($row['parentid'])?'<a href="entry.php?id='.$row['parentid'].'">&#x21a9;</a>':"")."</td>";
      print "<td><a href=\"?project=".$row['project']."\">".htmlspecialchars($row['project'])."</td>";
      print "<td><a href=\"?".join('&', array('category='.urlencode($row['category']), $_SERVER['QUERY_STRING']))."\">".htmlspecialchars($row['category'])."</a></td>";
      print "<td><a href=\"entry.php?id=".$row['id']."\" title=\"".htmlspecialchars($row['summary'])."\">".htmlspecialchars($row['title'])."</td>";

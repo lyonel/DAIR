@@ -133,6 +133,11 @@ select.select, input[type=text] {
 	background-color: red;
 }
 
+.closed {
+	font-style: italic;
+	opacity: .5;
+}
+
 .thisweek {
 	background-color: yellow;
 }
