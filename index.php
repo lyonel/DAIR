@@ -26,6 +26,7 @@ try {
    if(isset($_REQUEST['modified'])) { array_push($sort, 'modified>='.$dbh->quote($_REQUEST['modified'])); }
    if(isset($_REQUEST['score'])) { array_push($sort, 'score>='.($_REQUEST['score']*1.0)); }
    if(isset($_REQUEST['parentid'])) { array_push($sort, 'parentid='.$dbh->quote($_REQUEST['parentid'])); }
+   if(isset($_REQUEST['flagged'])) { array_push($sort, 'flagged'); }
 
    print "<h2>Tags</h2>\n";
    foreach ($dbh->query('SELECT DISTINCT tag FROM tags ORDER BY tag') as $row) {
@@ -60,7 +61,7 @@ try {
      print "<td><a href=\"?".join('&', array('type='.urlencode($row['type']), $_SERVER['QUERY_STRING']))."\">".htmlspecialchars($row['type'])."</a></td>";
      print "<td><a href=\"entry.php?id=".$row['id']."\">".$row['id']."</td>";
      print "<td>".(isset($row['linked'])?'<a href="?parentid='.$row['id'].'"><img src="paperclip.png" border="0"></a>':"")."</td>";
-     print "<td>".($row['flagged']?"&#9873;":"")."</td>";
+     print "<td><a href=\"?flagged=1\">".($row['flagged']?"&#9873;":"")."</a></td>";
      print "<td><a href=\"?project=".$row['project']."\">".htmlspecialchars($row['project'])."</td>";
      print "<td><a href=\"?".join('&', array('category='.urlencode($row['category']), $_SERVER['QUERY_STRING']))."\">".htmlspecialchars($row['category'])."</a></td>";
      print "<td><a href=\"entry.php?id=".$row['id']."\" title=\"".htmlspecialchars($row['summary'])."\">".htmlspecialchars($row['title'])."</td>";
