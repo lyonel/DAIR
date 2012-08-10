@@ -20,13 +20,9 @@ CREATE TRIGGER entry_update AFTER UPDATE ON entries BEGIN
 UPDATE entries SET updated=DATETIME('now') WHERE ROWID=old.ROWID;
 UPDATE entries SET updated=DATETIME('now') WHERE ROWID=new.parentid;
 END;
-CREATE TRIGGER log_close AFTER UPDATE OF status ON entries WHEN new.status!=old.status AND new.status IN ('closed', 'solved')
+CREATE TRIGGER log_openclose AFTER UPDATE OF open ON entries WHEN NEW.open!=OLD.open
 BEGIN
-INSERT INTO notes (summary, entryid) VALUES ('closed', old.ROWID);
-END;
-CREATE TRIGGER log_reopen AFTER UPDATE OF status ON entries WHEN new.status!=old.status AND new.status NOT IN ('closed', 'solved')
-BEGIN
-INSERT INTO notes (summary, entryid) VALUES ('reopened', old.ROWID);
+INSERT INTO notes (summary, entryid) VALUES (NEW.status, old.ROWID);
 END;
 CREATE TRIGGER note_update AFTER INSERT ON notes BEGIN
 UPDATE entries SET updated=DATETIME('now') WHERE ROWID=new.entryid;
