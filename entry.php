@@ -90,7 +90,7 @@ try {
      if(isset($row['parentid'])) {
        print "<a href=\"?id=".htmlspecialchars($row['parentid'])."\">view</a>\n";
      }
-     print "<p>type:".form_select('type', array('risk'=>'risk','issue'=>'issue', 'task'=>'task', 'opportunity'=>'opportunity'), $row['type'])."\n";
+     print "<p>type:".form_select('type', array('risk'=>'risk','issue'=>'issue', 'action'=>'action', 'opportunity'=>'opportunity'), $row['type'])."\n";
      print "<p>project:<br><input type=\"text\" name=\"project\" size=40 value=\"".htmlspecialchars($row['project'])."\">\n";
      print "<p>category:<br><input type=\"text\" name=\"category\" size=40 value=\"".htmlspecialchars($row['category'])."\">\n";
      print "<p>title:<br><input type=\"text\" name=\"title\" size=40 value=\"".htmlspecialchars($row['title'])."\">\n";
@@ -164,7 +164,7 @@ try {
    print "<input type=\"hidden\" value=\"".$r_id."\" name=\"parentid\">";
    print "<input type=\"hidden\" value=\"".$row['category']."\" name=\"category\">";
    print "<input type=\"hidden\" value=\"".$row['project']."\" name=\"project\">";
-   print "<input type=\"hidden\" value=\"task\" name=\"type\">";
+   print "<input type=\"hidden\" value=\"action\" name=\"type\">";
    print "<input class=\"button\" type=\"submit\" value=\"new\" name=\"action\">";
    print "</form></td>\n";
    print "<td></td></tr>";
