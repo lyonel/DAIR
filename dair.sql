@@ -7,7 +7,6 @@ CREATE VIEW tags AS SELECT keyword AS tag,entryid FROM keywords UNION SELECT cat
 CREATE TRIGGER close AFTER UPDATE OF status ON entries WHEN new.status IN ('closed', 'solved')
 BEGIN
 UPDATE entries SET open=0 WHERE ROWID=old.ROWID;
-INSERT INTO notes (summary, entryid) VALUES ('closed', old.ROWID);
 END;
 CREATE TRIGGER entry_delete AFTER DELETE ON entries
 BEGIN
@@ -21,11 +20,18 @@ CREATE TRIGGER entry_update AFTER UPDATE ON entries BEGIN
 UPDATE entries SET updated=DATETIME('now') WHERE ROWID=old.ROWID;
 UPDATE entries SET updated=DATETIME('now') WHERE ROWID=new.parentid;
 END;
+CREATE TRIGGER log_close AFTER UPDATE OF status ON entries WHEN new.status!=old.status AND new.status IN ('closed', 'solved')
+BEGIN
+INSERT INTO notes (summary, entryid) VALUES ('closed', old.ROWID);
+END;
+CREATE TRIGGER log_reopen AFTER UPDATE OF status ON entries WHEN new.status!=old.status AND new.status NOT IN ('closed', 'solved')
+BEGIN
+INSERT INTO notes (summary, entryid) VALUES ('reopened', old.ROWID);
+END;
 CREATE TRIGGER note_update AFTER INSERT ON notes BEGIN
 UPDATE entries SET updated=DATETIME('now') WHERE ROWID=new.entryid;
 END;
 CREATE TRIGGER reopen AFTER UPDATE OF status ON entries WHEN new.status NOT IN ('closed', 'solved')
 BEGIN
 UPDATE entries SET open=1 WHERE ROWID=old.ROWID;
-INSERT INTO notes (summary, entryid) VALUES ('reopened', old.ROWID);
 END;
