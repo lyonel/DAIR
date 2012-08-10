@@ -37,11 +37,6 @@ try {
      print "<a class=\"tag\" href=\"?person=".urlencode($row['person'])."\">".htmlspecialchars($row['person'])."</a>\n";
    }
 
-   print "<h2>Deadlines</h2>\n";
-   foreach (array('overdue','due this week', 'due next week', 'due this month') as $row) {
-     print "<a class=\"tag\" href=\"?tag=".urlencode($row)."\">".htmlspecialchars($row)."</a>\n";
-   }
-
    print "<h2>Entries</h2>\n";
    print '<a href="?status=new">INBOX</a> <a href="?">All</a> <a href="entry.php">New</a>';
    print "<table class=\"list\">\n";
