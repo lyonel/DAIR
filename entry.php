@@ -43,6 +43,7 @@ try {
    if($r_note == '') { $r_note = null; }
    if($r_asummary == '') { $r_asummary = null; }
    if($r_contingency == '') { $r_contingency = null; }
+   if($r_created == '') { $r_created = null; }
 
    if(isset($r_keyword)) {
      $dbh->exec('INSERT INTO keywords VALUES('.$dbh->quote($r_keyword).",".$dbh->quote($r_id).")");
@@ -64,8 +65,8 @@ try {
    }
 
    if($r_action == 'save' && isset($r_id)) {	// existing entry
-       $sth = $dbh->prepare('UPDATE entries SET project=?, type=?, category=?, title=?, summary=?, owner=?, status=?, probability=?, impact=?, strategy=?, deadline=?, parentid=? WHERE id=?');
-       $sth->execute(array($r_project, $r_type, $r_category, $r_title, $r_summary, $r_owner, $r_status, $r_probability, $r_impact, $r_strategy, $r_deadline, $r_parentid, $r_id));
+       $sth = $dbh->prepare('UPDATE entries SET project=?, type=?, category=?, title=?, summary=?, owner=?, status=?, probability=?, impact=?, strategy=?, deadline=?, parentid=?, timestamp=IFNULL(DATE(?), timestamp) WHERE id=?');
+       $sth->execute(array($r_project, $r_type, $r_category, $r_title, $r_summary, $r_owner, $r_status, $r_probability, $r_impact, $r_strategy, $r_deadline, $r_parentid, $r_created, $r_id));
    }
 
    $row = $dbh->query('SELECT id,DATE(timestamp) AS created,DATE(updated, \'localtime\') AS modified,* FROM entries WHERE id='.$dbh->quote($r_id))->fetch();
@@ -109,8 +110,8 @@ try {
      print "<p>impact:".form_select('impact', array(''=>'', 'low'=>'2','high'=>'3', 'critical'=>'5'), $row['impact'])."\n";
      print "<p>strategy:".form_select('strategy', array('accept'=>'accept','mitigate'=>'mitigate', 'transfer'=>'transfer', 'avoid'=>'avoid'), $row['strategy'])."\n";
      print "<p>deadline:<br><input type=\"text\" name=\"deadline\" size=40 value=\"".htmlspecialchars($row['deadline'])."\">\n";
-     if(isset($row['created'])) { print "<p>created: ".htmlspecialchars($row['created'])."\n"; }
-     if(isset($row['modified'])) { print " updated: ".htmlspecialchars($row['modified'])."\n"; }
+     if(isset($row['created'])) { print "<p>created:<br><input type=\"text\" name=\"created\" value=\"".htmlspecialchars($row['created'])."\">\n"; }
+     if(isset($row['modified'])) { print "updated: ".htmlspecialchars($row['modified'])."\n"; }
 
      print "</form>\n";
 
