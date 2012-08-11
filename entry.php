@@ -11,6 +11,7 @@ require "utils.inc.php";
 
 try {
    $dbh = new PDO('sqlite:risky.dair');
+   $dbh->exec('PRAGMA foreign_keys = ON');
 
    $r_action = 'view';
    extract($_REQUEST, EXTR_PREFIX_ALL|EXTR_REFS, 'r');
@@ -23,7 +24,7 @@ try {
    }
 
    if($r_action == 'X' && !isset($r_keywordid) && !isset($r_noteid) && !isset($r_actionid)) {
-     $dbh->exec('DELETE FROM entries WHERE ROWID='.$dbh->quote($r_id));
+     $dbh->exec('DELETE FROM entries WHERE id='.$dbh->quote($r_id));
      unset($r_id);
    }
    if($r_action == 'X' && isset($r_keywordid)) {
@@ -59,15 +60,15 @@ try {
    }
 
    if(($r_action == 'unflag' || $r_action == 'flag') && isset($r_id)) {	// existing entry
-     $dbh->exec('UPDATE entries SET flagged = NOT flagged WHERE ROWID='.$dbh->quote($r_id));
+     $dbh->exec('UPDATE entries SET flagged = NOT flagged WHERE id='.$dbh->quote($r_id));
    }
 
    if($r_action == 'save' && isset($r_id)) {	// existing entry
-       $sth = $dbh->prepare('UPDATE entries SET project=?, type=?, category=?, title=?, summary=?, owner=?, status=?, probability=?, impact=?, strategy=?, deadline=?, parentid=? WHERE ROWID=?');
+       $sth = $dbh->prepare('UPDATE entries SET project=?, type=?, category=?, title=?, summary=?, owner=?, status=?, probability=?, impact=?, strategy=?, deadline=?, parentid=? WHERE id=?');
        $sth->execute(array($r_project, $r_type, $r_category, $r_title, $r_summary, $r_owner, $r_status, $r_probability, $r_impact, $r_strategy, $r_deadline, $r_parentid, $r_id));
    }
 
-   $row = $dbh->query('SELECT entries.ROWID AS id,DATE(timestamp) AS created,DATE(updated, \'localtime\') AS modified,* FROM entries WHERE id='.$dbh->quote($r_id))->fetch();
+   $row = $dbh->query('SELECT id,DATE(timestamp) AS created,DATE(updated, \'localtime\') AS modified,* FROM entries WHERE id='.$dbh->quote($r_id))->fetch();
 
      if(!isset($row['id'])) {
        $row['type'] = 'risk';
@@ -81,7 +82,7 @@ try {
 
    if(isset($row['parentid'])) { $r_parentid = $row['parentid']; }
    $entries[''] = '';
-   foreach($dbh->query('SELECT ROWID AS id,type,title FROM entries WHERE open ORDER BY open DESC,title') as $entry) {
+   foreach($dbh->query('SELECT id,type,title FROM entries WHERE open ORDER BY open DESC,title') as $entry) {
      $entries[$entry['title'].' ('.$entry['type'].')'] = $entry['id'];
    }
 
@@ -141,7 +142,7 @@ try {
    if(isset($row['id'])) {
    print "<div id=\"children\"><h2>Children</h2>";
    print "<table>\n";
-   foreach($dbh->query('SELECT ROWID AS id,* FROM entries WHERE parentid='.$dbh->quote($r_id).'') as $child) {
+   foreach($dbh->query('SELECT * FROM entries WHERE parentid='.$dbh->quote($r_id).'') as $child) {
      print "<tr><td>";
      print "<form method=\"POST\">\n";
      print "<input type=\"hidden\" value=\"".$r_back."\" name=\"back\">\n";
