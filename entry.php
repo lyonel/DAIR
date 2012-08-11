@@ -96,7 +96,7 @@ try {
      print "<input type=\"image\" src=\"save.png\" title=\"save changes\">";
      print "<p>parent:".form_select('parentid', $entries, $r_parentid)."\n";
      if(isset($row['parentid'])) {
-       print "<a href=\"?id=".htmlspecialchars($row['parentid'])."\">view</a>\n";
+       print "<a href=\"?back=".urlencode($r_back)."&id=".htmlspecialchars($row['parentid'])."\">view</a>\n";
      }
      print "<p>type:".form_select('type', array('risk'=>'risk','issue'=>'issue', 'action'=>'action', 'opportunity'=>'opportunity'), $row['type'])."\n";
      print "<p>project:<br><input type=\"text\" name=\"project\" size=40 value=\"".htmlspecialchars($row['project'])."\">\n";
