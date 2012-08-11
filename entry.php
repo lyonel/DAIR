@@ -167,13 +167,6 @@ try {
    }
 
    print "<div id=\"notes\"><h2>Notes</h2>";
-   print "<form id=\"notes\" method=\"POST\">\n";
-     print "<input type=\"hidden\" value=\"".$r_back."\" name=\"back\">\n";
-   print "<input type=\"hidden\" value=\"".$row['id']."\" name=\"id\">";
-   print "from:<input type=\"text\" name=\"author\">\n";
-   print "<p>note:<br><textarea type=\"text\" cols=40 rows=3 name=\"note\"></textarea>\n";
-   print "<input class=\"button\" type=\"submit\" value=\"add\" name=\"action\">";
-   print "</form>\n";
    print "<table>\n";
    foreach($dbh->query('SELECT ROWID AS id,DATE(timestamp, \'localtime\') AS date,TIME(timestamp, \'localtime\') AS time,* FROM notes WHERE entryid='.$dbh->quote($r_id).' ORDER by timestamp DESC') as $tags) {
      print "<tr><td>";
@@ -188,6 +181,13 @@ try {
      print "</tr>";
    }
    print "</table>";
+   print "<form  method=\"POST\">\n";
+     print "<input type=\"hidden\" value=\"".$r_back."\" name=\"back\">\n";
+   print "<input type=\"hidden\" value=\"".$row['id']."\" name=\"id\">";
+   print "from:<input type=\"text\" name=\"author\">\n";
+   print "<p>note:<br><textarea type=\"text\" cols=40 rows=3 name=\"note\"></textarea>\n";
+   print "<input class=\"button\" type=\"submit\" value=\"add\" name=\"action\">";
+   print "</form>\n";
    print "</div>";
 
 
