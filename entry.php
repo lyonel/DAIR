@@ -15,7 +15,7 @@ try {
    $r_action = 'view';
    extract($_REQUEST, EXTR_PREFIX_ALL|EXTR_REFS, 'r');
    if(!isset($_REQUEST['back'])) {
-    $r_back = $_SERVER['HTTP_REFERER'];
+    $r_back = isset($_SERVER['HTTP_REFERER'])?$_SERVER['HTTP_REFERER']:".";
    }
 
    if($r_action == 'new') {
@@ -138,6 +138,32 @@ try {
    }
    print "</div>\n";
 
+   if(isset($row['id'])) {
+   print "<div id=\"children\"><h2>Children</h2>";
+   print "<table>\n";
+   foreach($dbh->query('SELECT ROWID AS id,* FROM entries WHERE parentid='.$dbh->quote($r_id).'') as $child) {
+     print "<tr><td>";
+     print "<form method=\"POST\">\n";
+     print "<input type=\"hidden\" value=\"".$r_back."\" name=\"back\">\n";
+     print "<input type=\"hidden\" value=\"".$child['id']."\" name=\"id\">";
+     print "<input class=\"button\" type=\"submit\" value=\"view\" name=\"action\">".reformat(htmlspecialchars($child['title']));
+     print "</form></td>\n";
+     print "<td>".htmlspecialchars($child['type'])."</td>";
+     print "<td>".reformat(htmlspecialchars($child['owner']))."</td>";
+     print "</tr>";
+   }
+   print "</table>";
+   print "<form method=\"POST\">\n";
+     print "<input type=\"hidden\" value=\"".$r_back."\" name=\"back\">\n";
+   print "<input type=\"hidden\" value=\"".$r_id."\" name=\"parentid\">";
+   print "<input type=\"hidden\" value=\"".$row['category']."\" name=\"category\">";
+   print "<input type=\"hidden\" value=\"".$row['project']."\" name=\"project\">";
+   print "<input type=\"hidden\" value=\"action\" name=\"type\">";
+   print "<input class=\"button\" type=\"submit\" value=\"new\" name=\"action\">";
+   print "</form>\n";
+   print "</div>";
+   }
+
    print "<div id=\"notes\"><h2>Notes</h2>";
    print "<form id=\"notes\" method=\"POST\">\n";
      print "<input type=\"hidden\" value=\"".$r_back."\" name=\"back\">\n";
@@ -161,35 +187,6 @@ try {
    }
    print "</table>";
    print "</div>";
-
-   if(isset($row['id'])) {
-   print "<div id=\"children\"><h2>Children</h2>";
-   print "<table>\n";
-   foreach($dbh->query('SELECT ROWID AS id,* FROM entries WHERE parentid='.$dbh->quote($r_id).'') as $child) {
-     print "<tr><td>";
-     print "<form method=\"POST\">\n";
-     print "<input type=\"hidden\" value=\"".$r_back."\" name=\"back\">\n";
-     print "<input type=\"hidden\" value=\"".$child['id']."\" name=\"id\">";
-     print "<input class=\"button\" type=\"submit\" value=\"view\" name=\"action\">".reformat(htmlspecialchars($child['title']));
-     print "</form></td>\n";
-     print "<td>".htmlspecialchars($child['type'])."</td>";
-     print "<td>".reformat(htmlspecialchars($child['owner']))."</td>";
-     print "</tr>";
-   }
-   print "<tr><td>";
-   print "<form method=\"POST\">\n";
-     print "<input type=\"hidden\" value=\"".$r_back."\" name=\"back\">\n";
-   print "<input type=\"hidden\" value=\"".$r_id."\" name=\"parentid\">";
-   print "<input type=\"hidden\" value=\"".$row['category']."\" name=\"category\">";
-   print "<input type=\"hidden\" value=\"".$row['project']."\" name=\"project\">";
-   print "<input type=\"hidden\" value=\"action\" name=\"type\">";
-   print "<input class=\"button\" type=\"submit\" value=\"new\" name=\"action\">";
-   print "</form></td>\n";
-   print "<td></td></tr>";
-   print "<td></td></tr>";
-   print "</table>";
-   print "</div>";
-   }
 
 
      if(isset($row['id'])) {
