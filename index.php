@@ -57,7 +57,7 @@ try {
    print "<th>age</th>";
    print "<th>activity</th>";
    print "</tr>\n";
-   foreach ($dbh->query('SELECT probability*impact AS score,entries.id AS id,DATE(deadline) AS due,open*(DATE(\'now\', \'localtime\')>=deadline) AS overdue,julianday(deadline)-julianday(\'now\') as duein,DATE(timestamp, \'localtime\') AS created,julianday(\'now\')-julianday(timestamp) AS age,open*100/(1+(JULIANDAY(\'now\')-JULIANDAY(updated))) AS activity,DATE(updated,\'localtime\') AS modified,entries.id IN (SELECT parentid FROM entries) AS linked,* FROM entries,tags,persons WHERE persons.entryid=id AND tags.entryid=id AND '.join(' AND ', $sort).' GROUP BY id ORDER BY open DESC,open*probability*impact DESC,deadline') as $row) {
+   foreach ($dbh->query('SELECT probability*impact AS score,entries.id AS id,DATE(deadline) AS due,open*(DATE(\'now\', \'localtime\')>=deadline) AS overdue,julianday(deadline)-julianday(\'now\') as duein,DATE(timestamp, \'localtime\') AS created,julianday(\'now\')-julianday(timestamp) AS age,open*100/(1+(JULIANDAY(\'now\')-JULIANDAY(updated))) AS activity,DATE(updated,\'localtime\') AS modified,entries.id IN (SELECT parentid FROM entries) AS linked,* FROM entries,tags,persons WHERE persons.entryid=id AND tags.entryid=id AND (flagged OR '.join(' AND ', $sort).') GROUP BY id ORDER BY open DESC,open*probability*impact DESC,deadline') as $row) {
      print "<tr ".($row['open']?'':'class="closed"').">";
      print "<td><a href=\"?".join('&', array('type='.urlencode($row['type']), $_SERVER['QUERY_STRING']))."\">".htmlspecialchars($row['type'])."</a></td>";
      print "<td><a href=\"entry.php?id=".$row['id']."\">".$row['id']."</td>";
