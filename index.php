@@ -60,12 +60,12 @@ try {
    foreach ($dbh->query('SELECT probability*impact AS score,entries.id AS id,DATE(deadline) AS due,open*(DATE(\'now\', \'localtime\')>=deadline) AS overdue,julianday(deadline)-julianday(\'now\') as duein,DATE(timestamp, \'localtime\') AS created,julianday(\'now\')-julianday(timestamp) AS age,open*100/(1+(JULIANDAY(\'now\')-JULIANDAY(updated))) AS activity,DATE(updated,\'localtime\') AS modified,entries.id IN (SELECT parentid FROM entries) AS linked,flagged OR flagdate<=DATE(\'now\') AS flag,* FROM entries,tags,persons WHERE persons.entryid=id AND tags.entryid=id AND '.join(' AND ', $sort).' GROUP BY id ORDER BY flag DESC,open DESC,open*probability*impact DESC,deadline') as $row) {
      print "<tr ".($row['open']?'':'class="closed"').">";
      print "<td><a href=\"?".join('&', array('type='.urlencode($row['type']), $_SERVER['QUERY_STRING']))."\">".htmlspecialchars($row['type'])."</a></td>";
-     print "<td><a href=\"entry.php?id=".$row['id']."\">".$row['id']."</td>";
+     print "<td><a href=\"entry.php?id=".$row['id']."\">".$row['id']."</a></td>";
      print "<td>".(isset($row['linked'])?'<a href="?parentid='.$row['id'].'"><img src="paperclip.png" border="0"></a>':"")."</td>";
      print "<td><a href=\"?flag=1\">".($row['flag']?"&#9873;":"")."</a></td>";
-     print "<td><a href=\"?project=".$row['project']."\">".htmlspecialchars($row['project'])."</td>";
+     print "<td><a href=\"?project=".$row['project']."\">".htmlspecialchars($row['project'])."</a></td>";
      print "<td><a href=\"?".join('&', array('category='.urlencode($row['category']), $_SERVER['QUERY_STRING']))."\">".htmlspecialchars($row['category'])."</a></td>";
-     print "<td><a href=\"entry.php?id=".$row['id']."\" title=\"".htmlspecialchars($row['summary'])."\">".htmlspecialchars($row['title'])."</td>";
+     print "<td><a href=\"entry.php?id=".$row['id']."\" title=\"".htmlspecialchars($row['summary'])."\">".htmlspecialchars($row['title'])."</a></td>";
      print "<td>".reformat(htmlspecialchars($row['owner']))."</td>";
      print "<td><a href=\"?status=".urlencode($row['status'])."\">".htmlspecialchars($row['status'])."</a></td>";
      print "<td><a href=\"?score=".urlencode($row['score'])."\">".htmlspecialchars($row['score'])."</a></td>";
