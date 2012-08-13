@@ -55,8 +55,8 @@ try {
    }
 
    if($r_action == 'save' && !isset($r_id)) {	// new entry
-     $sth = $dbh->prepare('INSERT INTO entries (project, type, category, title, summary, owner, status, probability, impact, strategy, deadline, flagdate, parentid) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)');
-     $sth->execute(array($r_project, $r_type, $r_category, $r_title, $r_summary, $r_owner, $r_status, $r_probability, $r_impact, $r_strategy, $r_deadline, $r_flagdate, $r_parentid));
+     $sth = $dbh->prepare('INSERT INTO entries (project, type, category, title, summary, contingency, owner, status, probability, impact, strategy, deadline, flagdate, parentid) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)');
+     $sth->execute(array($r_project, $r_type, $r_category, $r_title, $r_summary, $r_contingency, $r_owner, $r_status, $r_probability, $r_impact, $r_strategy, $r_deadline, $r_flagdate, $r_parentid));
      $r_id = $dbh->lastInsertId();
      $r_action = null;
    }
@@ -67,8 +67,8 @@ try {
    }
 
    if($r_action == 'save' && isset($r_id)) {	// existing entry
-       $sth = $dbh->prepare('UPDATE entries SET project=?, type=?, category=?, title=?, summary=?, owner=?, status=?, probability=?, impact=?, strategy=?, deadline=?, flagdate=?, parentid=?, timestamp=IFNULL(DATE(?), timestamp) WHERE id=?');
-       $sth->execute(array($r_project, $r_type, $r_category, $r_title, $r_summary, $r_owner, $r_status, $r_probability, $r_impact, $r_strategy, $r_deadline, $r_flagdate, $r_parentid, $r_created, $r_id));
+       $sth = $dbh->prepare('UPDATE entries SET project=?, type=?, category=?, title=?, summary=?, contingency=?, owner=?, status=?, probability=?, impact=?, strategy=?, deadline=?, flagdate=?, parentid=?, timestamp=IFNULL(DATE(?), timestamp) WHERE id=?');
+       $sth->execute(array($r_project, $r_type, $r_category, $r_title, $r_summary, $r_contingency, $r_owner, $r_status, $r_probability, $r_impact, $r_strategy, $r_deadline, $r_flagdate, $r_parentid, $r_created, $r_id));
    }
 
    $row = $dbh->query('SELECT id,DATE(timestamp) AS created,DATE(updated, \'localtime\') AS modified,* FROM entries WHERE id='.$dbh->quote($r_id))->fetch();
@@ -103,6 +103,7 @@ try {
      print "<p>category:<br><input type=\"text\" name=\"category\" size=40 value=\"".htmlspecialchars($row['category'])."\">\n";
      print "<p>title:<br><input type=\"text\" name=\"title\" size=40 value=\"".htmlspecialchars($row['title'])."\">\n";
      print "<p>summary:<br><textarea type=\"text\" cols=40 rows=3 name=\"summary\">".htmlspecialchars($row['summary'])."</textarea>\n";
+     print "<p>contingency:<br><textarea type=\"text\" cols=40 rows=3 name=\"contingency\">".htmlspecialchars($row['contingency'])."</textarea>\n";
      print "<p>owner:<br><input type=\"text\" name=\"owner\" size=40 value=\"".htmlspecialchars($row['owner'])."\">\n";
      print "<p>status:".form_select('status', array('new'=>'new','assessed'=>'assessed', 'open'=>'open', 'on hold'=> 'on hold', 'closed'=>'closed', 'solved'=>'solved'), $row['status'])."\n";
      print "<p>probability:".form_select('probability', array(''=>'', 'unlikely'=>'2','probable'=>'3', 'almost certain'=>'5'), $row['probability'])."\n";
