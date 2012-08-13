@@ -39,6 +39,7 @@ try {
    if($r_impact == '') { $r_impact = null; }
    if($r_owner == '') { $r_owner = null; }
    if($r_deadline == '') { $r_deadline = null; }
+   if($r_flagdate == '') { $r_flagdate = null; }
    if($r_author == '') { $r_author = null; }
    if($r_note == '') { $r_note = null; }
    if($r_asummary == '') { $r_asummary = null; }
@@ -54,19 +55,20 @@ try {
    }
 
    if($r_action == 'save' && !isset($r_id)) {	// new entry
-     $sth = $dbh->prepare('INSERT INTO entries (project, type, category, title, summary, owner, status, probability, impact, strategy, deadline, parentid) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)');
-     $sth->execute(array($r_project, $r_type, $r_category, $r_title, $r_summary, $r_owner, $r_status, $r_probability, $r_impact, $r_strategy, $r_deadline, $r_parentid));
+     $sth = $dbh->prepare('INSERT INTO entries (project, type, category, title, summary, owner, status, probability, impact, strategy, deadline, flagdate, parentid) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)');
+     $sth->execute(array($r_project, $r_type, $r_category, $r_title, $r_summary, $r_owner, $r_status, $r_probability, $r_impact, $r_strategy, $r_deadline, $r_flagdate, $r_parentid));
      $r_id = $dbh->lastInsertId();
      $r_action = null;
    }
 
    if(($r_action == 'unflag' || $r_action == 'flag') && isset($r_id)) {	// existing entry
      $dbh->exec('UPDATE entries SET flagged = NOT flagged WHERE id='.$dbh->quote($r_id));
+     $dbh->exec('UPDATE entries SET flagdate = '.(($r_action == 'flag')?"DATE('now')":"NULL").' WHERE id='.$dbh->quote($r_id));
    }
 
    if($r_action == 'save' && isset($r_id)) {	// existing entry
-       $sth = $dbh->prepare('UPDATE entries SET project=?, type=?, category=?, title=?, summary=?, owner=?, status=?, probability=?, impact=?, strategy=?, deadline=?, parentid=?, timestamp=IFNULL(DATE(?), timestamp) WHERE id=?');
-       $sth->execute(array($r_project, $r_type, $r_category, $r_title, $r_summary, $r_owner, $r_status, $r_probability, $r_impact, $r_strategy, $r_deadline, $r_parentid, $r_created, $r_id));
+       $sth = $dbh->prepare('UPDATE entries SET project=?, type=?, category=?, title=?, summary=?, owner=?, status=?, probability=?, impact=?, strategy=?, deadline=?, flagdate=?, parentid=?, timestamp=IFNULL(DATE(?), timestamp) WHERE id=?');
+       $sth->execute(array($r_project, $r_type, $r_category, $r_title, $r_summary, $r_owner, $r_status, $r_probability, $r_impact, $r_strategy, $r_deadline, $r_flagdate, $r_parentid, $r_created, $r_id));
    }
 
    $row = $dbh->query('SELECT id,DATE(timestamp) AS created,DATE(updated, \'localtime\') AS modified,* FROM entries WHERE id='.$dbh->quote($r_id))->fetch();
@@ -95,10 +97,7 @@ try {
        print "<input type=\"hidden\" value=\"".$row['id']."\" name=\"id\">\n";
      }
      print "<input type=\"image\" src=\"save.png\" title=\"save changes\">";
-     print "<p>parent:".form_select('parentid', $entries, $r_parentid)."\n";
-     if(isset($row['parentid'])) {
-       print "<a href=\"?back=".urlencode($r_back)."&id=".htmlspecialchars($row['parentid'])."\">view</a>\n";
-     }
+     print "<p>".(isset($row['parentid'])?"<a href=\"?back=".urlencode($r_back)."&id=".htmlspecialchars($row['parentid'])."\">parent</a>:":"parent:").form_select('parentid', $entries, $r_parentid)."\n";
      print "<p>type:".form_select('type', array('risk'=>'risk','issue'=>'issue', 'action'=>'action', 'opportunity'=>'opportunity'), $row['type'])."\n";
      print "<p>project:<br><input type=\"text\" name=\"project\" size=40 value=\"".htmlspecialchars($row['project'])."\">\n";
      print "<p>category:<br><input type=\"text\" name=\"category\" size=40 value=\"".htmlspecialchars($row['category'])."\">\n";
@@ -109,8 +108,9 @@ try {
      print "<p>probability:".form_select('probability', array(''=>'', 'unlikely'=>'2','probable'=>'3', 'almost certain'=>'5'), $row['probability'])."\n";
      print "<p>impact:".form_select('impact', array(''=>'', 'low'=>'2','high'=>'3', 'critical'=>'5'), $row['impact'])."\n";
      print "<p>strategy:".form_select('strategy', array('accept'=>'accept','mitigate'=>'mitigate', 'transfer'=>'transfer', 'avoid'=>'avoid'), $row['strategy'])."\n";
-     print "<p>deadline:<br><input type=\"text\" name=\"deadline\" size=40 value=\"".htmlspecialchars($row['deadline'])."\">\n";
-     if(isset($row['created'])) { print "<p>created:<br><input type=\"text\" name=\"created\" value=\"".htmlspecialchars($row['created'])."\">\n"; }
+     print "<p>deadline:<br><input type=\"text\" name=\"deadline\" id=\"deadline\" size=12 value=\"".htmlspecialchars($row['deadline'])."\">\n";
+     print "<p>flag on:<br><input type=\"text\" name=\"flagdate\" id=\"flagdate\" size=12 value=\"".htmlspecialchars($row['flagdate'])."\">\n";
+     if(isset($row['created'])) { print "<p>created:<br><input type=\"text\" name=\"created\" id=\"created\" size=12 value=\"".htmlspecialchars($row['created'])."\">\n"; }
      if(isset($row['modified'])) { print "updated: ".htmlspecialchars($row['modified'])."\n"; }
 
      print "</form>\n";
