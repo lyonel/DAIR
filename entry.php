@@ -149,10 +149,10 @@ try {
      print "<form method=\"POST\">\n";
      print "<input type=\"hidden\" value=\"".$r_back."\" name=\"back\">\n";
      print "<input type=\"hidden\" value=\"".$child['id']."\" name=\"id\">";
-     print "<input class=\"button\" type=\"submit\" value=\"view\" name=\"action\">".reformat(htmlspecialchars($child['title']));
-     print "</form></td>\n";
-     print "<td>".htmlspecialchars($child['type'])."</td>";
-     print "<td>".reformat(htmlspecialchars($child['owner']))."</td>";
+     print "<input class=\"button\" type=\"submit\" value=\"view\" name=\"action\"></form></td><td ".($child['open']?'':'class="closed"').">".reformat(htmlspecialchars($child['title']));
+     print "</td>\n";
+     print "<td ".($child['open']?'':'class="closed"').">".htmlspecialchars($child['type'])."</td>";
+     print "<td ".($child['open']?'':'class="closed"').">".reformat(htmlspecialchars($child['owner']))."</td>";
      print "</tr>";
    }
    print "</table>";
