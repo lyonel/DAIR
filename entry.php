@@ -2,6 +2,14 @@
 <head>
 <title>Risky</title>
 <link rel="stylesheet" href="risky.css" type="text/css" />
+
+<script type="text/javascript">
+function setflagdate(value)
+{
+    document.forms['reminder'].elements["flagdate"].value = value;
+}
+</script>
+
 </head>
 <body>
 <h1>Entry</h1>
@@ -55,20 +63,19 @@ try {
    }
 
    if($r_action == 'save' && !isset($r_id)) {	// new entry
-     $sth = $dbh->prepare('INSERT INTO entries (project, type, category, title, summary, contingency, owner, status, probability, impact, strategy, deadline, flagdate, parentid) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)');
-     $sth->execute(array($r_project, $r_type, $r_category, $r_title, $r_summary, $r_contingency, $r_owner, $r_status, $r_probability, $r_impact, $r_strategy, $r_deadline, $r_flagdate, $r_parentid));
+     $sth = $dbh->prepare('INSERT INTO entries (project, type, category, title, summary, contingency, owner, status, probability, impact, strategy, deadline, parentid) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)');
+     $sth->execute(array($r_project, $r_type, $r_category, $r_title, $r_summary, $r_contingency, $r_owner, $r_status, $r_probability, $r_impact, $r_strategy, $r_deadline, $r_parentid));
      $r_id = $dbh->lastInsertId();
      $r_action = null;
    }
 
-   if(($r_action == 'unflag' || $r_action == 'flag') && isset($r_id)) {	// existing entry
-     $dbh->exec('UPDATE entries SET flagged = NOT flagged WHERE id='.$dbh->quote($r_id));
-     $dbh->exec('UPDATE entries SET flagdate = '.(($r_action == 'flag')?"DATE('now')":"NULL").' WHERE id='.$dbh->quote($r_id));
+   if(($r_action == 'reminder') && isset($r_id)) {	// existing entry
+     $dbh->exec('UPDATE entries SET flagdate = DATE('.$dbh->quote($r_flagdate).') WHERE id='.$dbh->quote($r_id));
    }
 
    if($r_action == 'save' && isset($r_id)) {	// existing entry
-       $sth = $dbh->prepare('UPDATE entries SET project=?, type=?, category=?, title=?, summary=?, contingency=?, owner=?, status=?, probability=?, impact=?, strategy=?, deadline=?, flagdate=?, parentid=?, timestamp=IFNULL(DATE(?), timestamp) WHERE id=?');
-       $sth->execute(array($r_project, $r_type, $r_category, $r_title, $r_summary, $r_contingency, $r_owner, $r_status, $r_probability, $r_impact, $r_strategy, $r_deadline, $r_flagdate, $r_parentid, $r_created, $r_id));
+       $sth = $dbh->prepare('UPDATE entries SET project=?, type=?, category=?, title=?, summary=?, contingency=?, owner=?, status=?, probability=?, impact=?, strategy=?, deadline=?, parentid=?, timestamp=IFNULL(DATE(?), timestamp) WHERE id=?');
+       $sth->execute(array($r_project, $r_type, $r_category, $r_title, $r_summary, $r_contingency, $r_owner, $r_status, $r_probability, $r_impact, $r_strategy, $r_deadline, $r_parentid, $r_created, $r_id));
    }
 
    $row = $dbh->query('SELECT id,DATE(timestamp) AS created,DATE(updated, \'localtime\') AS modified,* FROM entries WHERE id='.$dbh->quote($r_id))->fetch();
@@ -110,7 +117,6 @@ try {
      print "<p>impact:".form_select('impact', array(''=>'', 'low'=>'2','high'=>'3', 'critical'=>'5'), $row['impact'])."\n";
      print "<p>strategy:".form_select('strategy', array('accept'=>'accept','mitigate'=>'mitigate', 'transfer'=>'transfer', 'avoid'=>'avoid'), $row['strategy'])."\n";
      print "<p>deadline:<br><input type=\"text\" name=\"deadline\" id=\"deadline\" size=12 value=\"".htmlspecialchars($row['deadline'])."\">\n";
-     print "<p>flag on:<br><input type=\"text\" name=\"flagdate\" id=\"flagdate\" size=12 value=\"".htmlspecialchars($row['flagdate'])."\">\n";
      if(isset($row['created'])) { print "<p>created:<br><input type=\"text\" name=\"created\" id=\"created\" size=12 value=\"".htmlspecialchars($row['created'])."\">\n"; }
      if(isset($row['modified'])) { print "updated: ".htmlspecialchars($row['modified'])."\n"; }
 
@@ -119,11 +125,6 @@ try {
    if(isset($r_id))
    {
    print "<div id=\"tags\"><h2>Tags</h2>";
-   print "<form method=\"POST\">\n";
-     print "<input type=\"hidden\" value=\"".$r_back."\" name=\"back\">\n";
-   print "<input type=\"hidden\" value=\"".$row['id']."\" name=\"id\">";
-   print "<input class=\"button\" type=\"submit\" value=\"".($row['flagged']?"un":"")."flag\" name=\"action\">";
-   print "</form>\n";
    print "<form method=\"POST\">\n";
      print "<input type=\"hidden\" value=\"".$r_back."\" name=\"back\">\n";
    print "<input type=\"text\" name=\"keyword\">\n";
@@ -139,6 +140,19 @@ try {
      print "<input class=\"button\" type=\"submit\" value=\"&#x2716; ".htmlspecialchars($tags['keyword']).'"> ';
      print "</form>\n";
    }
+   print "<h2>Reminder</h2><form id=\"reminder\" method=\"POST\">\n";
+   print "<input type=\"hidden\" value=\"".$r_back."\" name=\"back\">\n";
+   print "<input type=\"hidden\" value=\"".$row['id']."\" name=\"id\">";
+   print "<input type=\"hidden\" value=\"reminder\" name=\"action\">";
+   //print "<input class=\"button\" type=\"submit\" value=\"".($row['flagged']?"un":"")."flag\" name=\"action\">";
+   print "<input type=\"text\" name=\"flagdate\" id=\"flagdate\" size=12 value=\"".htmlspecialchars($row['flagdate'])."\">\n";
+   print "<button class=\"button\" onClick=\"setflagdate('')\">remove</button>";
+   print "<button class=\"button\" onClick=\"setflagdate('".date('Y-m-d')."')\">today</button> ";
+   print "<button class=\"button\" onClick=\"setflagdate('".date('Y-m-d', strtotime($row['flagdate'].'+1 day'))."')\">+1 day</button> ";
+   print "<button class=\"button\" title=\"7 days\" onClick=\"setflagdate('".date('Y-m-d', strtotime($row['flagdate'].'+1 week'))."')\">+1 week</button> ";
+   print "<button class=\"button\" title=\"4 weeks\" onClick=\"setflagdate('".date('Y-m-d', strtotime($row['flagdate'].'+4 week'))."')\">+1 month</button> ";
+   print "<button class=\"button\" title=\"26 weeks\" onClick=\"setflagdate('".date('Y-m-d', strtotime($row['flagdate'].'+26 week'))."')\">+ 6 months</button> ";
+   print "</form>\n";
    print "</div>\n";
 
    if(isset($row['id'])) {
