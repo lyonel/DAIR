@@ -64,8 +64,8 @@ try {
    }
 
    if($r_action == 'save' && !isset($r_id)) {	// new entry
-     $sth = $dbh->prepare('INSERT INTO entries (project, type, category, title, summary, contingency, owner, status, probability, impact, strategy, deadline, parentid) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)');
-     $sth->execute(array($r_project, $r_type, $r_category, $r_title, $r_summary, $r_contingency, $r_owner, $r_status, $r_probability, $r_impact, $r_strategy, $r_deadline, $r_parentid));
+     $sth = $dbh->prepare('INSERT INTO entries (project, type, category, title, summary, contingency, owner, source, status, probability, impact, strategy, deadline, parentid) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)');
+     $sth->execute(array($r_project, $r_type, $r_category, $r_title, $r_summary, $r_contingency, $r_owner, $r_source, $r_status, $r_probability, $r_impact, $r_strategy, $r_deadline, $r_parentid));
      $r_id = $dbh->lastInsertId();
      $r_action = null;
    }
@@ -75,8 +75,8 @@ try {
    }
 
    if($r_action == 'save' && isset($r_id)) {	// existing entry
-       $sth = $dbh->prepare('UPDATE entries SET project=?, type=?, category=?, title=?, summary=?, contingency=?, owner=?, status=?, probability=?, impact=?, strategy=?, deadline=?, parentid=?, timestamp=IFNULL(DATE(?), timestamp) WHERE id=?');
-       $sth->execute(array($r_project, $r_type, $r_category, $r_title, $r_summary, $r_contingency, $r_owner, $r_status, $r_probability, $r_impact, $r_strategy, $r_deadline, $r_parentid, $r_created, $r_id));
+       $sth = $dbh->prepare('UPDATE entries SET project=?, type=?, category=?, title=?, summary=?, contingency=?, owner=?, source=?, status=?, probability=?, impact=?, strategy=?, deadline=?, parentid=?, timestamp=IFNULL(DATE(?), timestamp) WHERE id=?');
+       $sth->execute(array($r_project, $r_type, $r_category, $r_title, $r_summary, $r_contingency, $r_owner, $r_source, $r_status, $r_probability, $r_impact, $r_strategy, $r_deadline, $r_parentid, $r_created, $r_id));
    }
 
    $row = $dbh->query('SELECT id,DATE(timestamp) AS created,DATE(updated, \'localtime\') AS modified,* FROM entries WHERE id='.$dbh->quote($r_id))->fetch();
