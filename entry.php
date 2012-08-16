@@ -46,6 +46,7 @@ try {
    if($r_probability == '') { $r_probability = null; }
    if($r_impact == '') { $r_impact = null; }
    if($r_owner == '') { $r_owner = null; }
+   if($r_source == '') { $r_source = null; }
    if($r_deadline == '') { $r_deadline = null; }
    if($r_flagdate == '') { $r_flagdate = null; }
    if($r_author == '') { $r_author = null; }
@@ -105,13 +106,14 @@ try {
      }
      print "<input type=\"image\" src=\"save.png\" title=\"save changes\">";
      print "<p>".(isset($row['parentid'])?"<a href=\"?back=".urlencode($r_back)."&id=".htmlspecialchars($row['parentid'])."\">parent</a>:":"parent:").form_select('parentid', $entries, $r_parentid)."\n";
-     print "<p>type:".form_select('type', array('risk'=>'risk','issue'=>'issue', 'action'=>'action', 'opportunity'=>'opportunity'), $row['type'])."\n";
+     print "<p>type:".form_select('type', array('risk'=>'risk','issue'=>'issue', 'action'=>'action', 'opportunity'=>'opportunity', 'decision'=>'decision'), $row['type'])."\n";
      print "<p>project:<br><input type=\"text\" name=\"project\" size=40 value=\"".htmlspecialchars($row['project'])."\">\n";
      print "<p>category:<br><input type=\"text\" name=\"category\" size=40 value=\"".htmlspecialchars($row['category'])."\">\n";
      print "<p>title:<br><input type=\"text\" name=\"title\" size=40 value=\"".htmlspecialchars($row['title'])."\">\n";
      print "<p>summary:<br><textarea type=\"text\" cols=40 rows=3 name=\"summary\">".htmlspecialchars($row['summary'])."</textarea>\n";
      print "<p>contingency:<br><textarea type=\"text\" cols=40 rows=3 name=\"contingency\">".htmlspecialchars($row['contingency'])."</textarea>\n";
      print "<p>owner:<br><input type=\"text\" name=\"owner\" size=40 value=\"".htmlspecialchars($row['owner'])."\">\n";
+     print "<p>source:<br><input type=\"text\" name=\"source\" size=40 value=\"".htmlspecialchars($row['source'])."\">\n";
      print "<p>status:".form_select('status', array('new'=>'new','assessed'=>'assessed', 'open'=>'open', 'on hold'=> 'on hold', 'closed'=>'closed', 'solved'=>'solved'), $row['status'])."\n";
      print "<p>probability:".form_select('probability', array(''=>'', 'unlikely'=>'2','probable'=>'3', 'almost certain'=>'5'), $row['probability'])."\n";
      print "<p>impact:".form_select('impact', array(''=>'', 'low'=>'2','high'=>'3', 'critical'=>'5'), $row['impact'])."\n";
