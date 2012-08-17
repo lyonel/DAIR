@@ -23,8 +23,6 @@ function form_select($name,$options,$selected = '',$params = '')
 }
 
 function reformat($str) {
-    $str = nl2br($str);
-
     $pattern = array(
         '/\*\*(.*?)\*\*/is',
         '/__(.*?)__/is',
@@ -44,6 +42,7 @@ function reformat($str) {
     ); 
 
     $str = preg_replace ($pattern, $replace, $str); 
+    $str = nl2br($str);
     return $str;
 } 
 
