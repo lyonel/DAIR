@@ -93,7 +93,7 @@ try {
 
    if(isset($row['parentid'])) { $r_parentid = $row['parentid']; }
    $entries[''] = '';
-   foreach($dbh->query('SELECT id,type,title FROM entries WHERE open ORDER BY open DESC,title') as $entry) {
+   foreach($dbh->query('SELECT id,type,title FROM entries ORDER BY open DESC,title') as $entry) {
      $entries[$entry['title'].' ('.$entry['type'].')'] = $entry['id'];
    }
 
