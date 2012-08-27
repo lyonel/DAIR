@@ -30,7 +30,7 @@ try {
    if(isset($_REQUEST['flag'])) { array_push($sort, 'flag'); }
 
    print "<h2>Tags</h2>\n";
-   foreach ($dbh->query('SELECT DISTINCT tag FROM tags ORDER BY tag') as $row) {
+   foreach ($dbh->query('SELECT DISTINCT tag FROM tags WHERE TRIM(tag)!=\'\' ORDER BY tag') as $row) {
      print "<a class=\"tag\" href=\"?tag=".urlencode($row['tag'])."\">".htmlspecialchars($row['tag'])."</a>\n";
    }
 
