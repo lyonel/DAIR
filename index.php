@@ -40,7 +40,7 @@ try {
    }
 
    print "<h2>Entries</h2>\n";
-   print '<a href="?status=new">INBOX</a> <a href="?">All</a> <a href="entry.php">New</a>';
+   print '<a href="?"><img src="home.png" border=0></a> <a href="?status=new"><img src="inbox.png" border=0></a> <a href="entry.php"><img src="add.png" border=0></a>';
    print "<table class=\"list\">\n";
    print "<tr>";
    print "<th></th>";
