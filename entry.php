@@ -148,6 +148,7 @@ try {
    print "<input type=\"hidden\" value=\"reminder\" name=\"action\">";
    //print "<input class=\"button\" type=\"submit\" value=\"".($row['flagged']?"un":"")."flag\" name=\"action\">";
    print "<input type=\"text\" name=\"flagdate\" id=\"flagdate\" size=12 value=\"".htmlspecialchars($row['flagdate'])."\">\n";
+   print "<button class=\"button\" >OK</button>";
    print "<button class=\"button\" onClick=\"setflagdate('')\">remove</button>";
    print "<button class=\"button\" onClick=\"setflagdate('".date('Y-m-d')."')\">today</button> ";
    print "<button class=\"button\" onClick=\"setflagdate('".date('Y-m-d', strtotime($row['flagdate'].'+1 day'))."')\">+1 day</button> ";
