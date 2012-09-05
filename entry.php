@@ -117,10 +117,10 @@ try {
      print "<p>owner:<br><input type=\"text\" name=\"owner\" size=40 value=\"".htmlspecialchars($row['owner'])."\">\n";
      print "<p>source:<br><input type=\"text\" name=\"source\" size=40 value=\"".htmlspecialchars($row['source'])."\">\n";
      print "<p>status:".form_select('status', array('new'=>'new','assessed'=>'assessed', 'open'=>'open', 'on hold'=> 'on hold', 'closed'=>'closed', 'solved'=>'solved'), $row['status'])."\n";
-     print "<p>probability:".form_select('probability', array('?'=>'', ''=>'1', 'unlikely'=>'2','probable'=>'3', 'almost certain'=>'5'), $row['probability'])."\n";
-     print "<p>impact:".form_select('impact', array('?'=>'', ''=>'1', 'low'=>'2','high'=>'3', 'critical'=>'5'), $row['impact'])."\n";
-     print "<p>urgency:".form_select('urgency', array('?'=>'', ''=>'1', 'no rush'=>'2','as soon as possible'=>'3', 'already late'=>'5'), $row['urgency'])."\n";
-     print "<p>effort:".form_select('effort', array('?'=>'', ''=>'1', 'normal'=>'2','high'=>'3', 'huge'=>'5'), $row['effort'])."\n";
+     print "<p>probability:".form_select('probability', array(''=>'', 'neutral'=>'1', 'unlikely'=>'2','probable'=>'3', 'almost certain'=>'5'), $row['probability'])."\n";
+     print "<p>impact:".form_select('impact', array(''=>'', 'neutral'=>'1', 'low'=>'2','high'=>'3', 'critical'=>'5'), $row['impact'])."\n";
+     print "<p>urgency:".form_select('urgency', array(''=>'', 'neutral'=>'1', 'normal'=>'2','urgent'=>'3', 'already late'=>'5'), $row['urgency'])."\n";
+     print "<p>effort:".form_select('effort', array(''=>'', 'neutral'=>'1', 'low'=>'2','high'=>'3', 'huge'=>'5'), $row['effort'])."\n";
      print "<p>strategy:".form_select('strategy', array('accept'=>'accept','mitigate'=>'mitigate', 'transfer'=>'transfer', 'avoid'=>'avoid'), $row['strategy'])."\n";
      print "<p>deadline:<br><input type=\"text\" name=\"deadline\" id=\"deadline\" size=12 value=\"".htmlspecialchars($row['deadline'])."\">\n";
      if(isset($row['created'])) { print "<p>created:<br><input type=\"text\" name=\"created\" id=\"created\" size=12 value=\"".htmlspecialchars($row['created'])."\">\n"; }
