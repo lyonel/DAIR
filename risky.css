@@ -153,8 +153,12 @@ select.select, input[type=text] {
 }
 
 #tags {
-	width: 20%;
 	display: block;
+}
+
+#tags, #participants, #reminder {
+	width: 30%;
+	float: left;
 }
 
 #notes {
@@ -165,7 +169,7 @@ select.select, input[type=text] {
 }
 
 #children {
-	float: right;
+	float: left;
 	display: block;
 	width: 40%;
 }

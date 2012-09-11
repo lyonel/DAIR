@@ -35,6 +35,9 @@ try {
      $dbh->exec('DELETE FROM entries WHERE id='.$dbh->quote($r_id));
      unset($r_id);
    }
+   if($r_action == 'X' && isset($r_participantid)) {
+     $dbh->exec('DELETE FROM participants WHERE ROWID='.$dbh->quote($r_participantid));
+   }
    if($r_action == 'X' && isset($r_keywordid)) {
      $dbh->exec('DELETE FROM keywords WHERE ROWID='.$dbh->quote($r_keywordid));
    }
@@ -57,6 +60,9 @@ try {
    if($r_contingency == '') { $r_contingency = null; }
    if($r_created == '') { $r_created = null; }
 
+   if(isset($r_participant)) {
+     $dbh->exec('INSERT INTO participants VALUES('.$dbh->quote($r_participant).",".$dbh->quote($r_id).")");
+   }
    if(isset($r_keyword)) {
      $dbh->exec('INSERT INTO keywords VALUES('.$dbh->quote($r_keyword).",".$dbh->quote($r_id).")");
    }
@@ -146,6 +152,24 @@ try {
      print "<input class=\"button\" type=\"submit\" value=\"&#x2716; ".htmlspecialchars($tags['keyword']).'"> ';
      print "</form>\n";
    }
+   print "</div>\n";
+   print "<div id=\"participants\"><h2>Participants</h2>";
+   print "<form method=\"POST\">\n";
+     print "<input type=\"hidden\" value=\"".$r_back."\" name=\"back\">\n";
+   print "<input type=\"text\" name=\"participant\">\n";
+   print "<input type=\"hidden\" value=\"".$row['id']."\" name=\"id\">";
+   print "<input class=\"button\" type=\"submit\" value=\"add\" name=\"action\">";
+   print "</form>\n";
+
+   foreach($dbh->query('SELECT ROWID AS id,participant FROM participants WHERE entryid='.$dbh->quote($r_id)) as $participants) {
+     print "<form method=\"POST\">\n";
+     print "<input type=\"hidden\" value=\"".$r_back."\" name=\"back\">\n";
+     print "<input type=\"hidden\" value=\"".$participants['id']."\" name=\"participantid\">";
+     print "<input type=\"hidden\" value=\"X\" name=\"action\">";
+     print "<input class=\"button\" type=\"submit\" value=\"&#x2716; ".htmlspecialchars($participants['participant']).'"> ';
+     print "</form>\n";
+   }
+   print "</div>\n";
    print "<h2>Reminder</h2><form id=\"reminder\" method=\"POST\">\n";
    print "<input type=\"hidden\" value=\"".$r_back."\" name=\"back\">\n";
    print "<input type=\"hidden\" value=\"".$row['id']."\" name=\"id\">";
@@ -160,7 +184,6 @@ try {
    print "<button class=\"button\" title=\"4 weeks\" onClick=\"setflagdate('".date('Y-m-d', strtotime($row['flagdate'].'+4 week'))."')\">+1 month</button> ";
    print "<button class=\"button\" title=\"26 weeks\" onClick=\"setflagdate('".date('Y-m-d', strtotime($row['flagdate'].'+26 week'))."')\">+ 6 months</button> ";
    print "</form>\n";
-   print "</div>\n";
 
    if(isset($row['id'])) {
    print "<div id=\"children\"><h2>Children</h2>";
