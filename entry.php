@@ -31,7 +31,7 @@ try {
      unset($r_id);
    }
 
-   if($r_action == 'X' && !isset($r_keywordid) && !isset($r_noteid) && !isset($r_actionid)) {
+   if($r_action == 'X' && !isset($r_participantid) && !isset($r_keywordid) && !isset($r_noteid) && !isset($r_actionid)) {
      $dbh->exec('DELETE FROM entries WHERE id='.$dbh->quote($r_id));
      unset($r_id);
    }
